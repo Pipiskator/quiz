@@ -22,12 +22,12 @@ let questions = [
         ]
     },
     {
-        question: "Как добавить CSS в HTML?",
+        question: "Каким тегом добавляется CSS в HTML?",
         allOptions: [
             { text: "style", correct: true },
             { text: "css", correct: false },
             { text: "script", correct: false },
-            { text: "пон", correct: false },
+            { text: "head", correct: false },
             { text: "stylesheet", correct: false },
             { text: "style-link", correct: false }
         ]
