@@ -1,0 +1,149 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+.hidden {
+    display: none !important;  /* Скрываем элемент с помощью класса */
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+    background-color: #ffffff; /* Белый фон для контейнера */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Тень для контейнера */
+    border-radius: 10px; /* Скругленные углы */
+}
+
+h1 {
+    font-size: 2rem;
+    color: #333;
+}
+
+#quiz-container {
+    margin: 20px 0;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+button:disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+}
+
+.result {
+    margin-top: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+#answers-container {
+    margin-top: 20px;
+}
+
+.answer {
+    display: block;
+    padding: 10px;
+    background-color: #f0f0f0;
+    margin: 5px 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.answer:hover {
+    background-color: #e0e0e0;
+}
+
+#graph-container {
+    margin-top: 20px; /* Отступ сверху */
+    display: flex;
+    flex-direction: column; /* Располагаем элементы по вертикали */
+    align-items: center; /* Центрируем содержимое */
+}
+
+.graph-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px; /* Отступ между заголовком и графиком */
+    text-align: center;
+}
+
+.graph {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 250px;
+    width: 100%; /* Убедимся, что график занимает всю ширину контейнера */
+    border-radius: 10px;
+    padding-bottom: 40px; /* Увеличиваем отступ для оси X */
+    position: relative;
+}
+
+.bar {
+    width: 50px;
+    margin: 0 10px;
+    background-color: #4CAF50;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.bar-user {
+    background-color: #ff5722;
+}
+
+.labels {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.label {
+    font-size: 1rem;
+    margin: 0 5px;
+    text-align: center;
+}
+
+.y-axis {
+    position: absolute;
+    top: 50%;
+    left: -60px;  /* Ось всегда будет находиться слева от контейнера */
+    transform: translateY(-50%) rotate(-90deg);
+    font-size: 1.2rem;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.x-axis {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+
+@media (max-width: 480px) {
+    .graph {
+        height: 180px; /* Еще меньше высота графика на очень маленьких экранах */
+    }
+
+    .y-axis {
+        left: -100px; /* Еще больше отступ для оси Y */
+        font-size: 0.9rem; /* Снижаем размер шрифта оси Y */
+    }
+}
