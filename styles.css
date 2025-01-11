@@ -61,7 +61,8 @@ button:disabled {
 }
 
 .answer:hover {
-    background-color: #e0e0e0;
+    border: solid #4CAF50; /* Оранжевая рамка для выделенного ответа */
+    color: #333; /* Цвет текста */
 }
 
 #graph-container {
@@ -99,7 +100,18 @@ button:disabled {
 }
 
 .bar-user {
-    background-color: #ff5722;
+    background-color: #4cafa0; /* Яркий желтый цвет для выделения */
+    border: 2px solid #4CAF50; /* Оранжевая рамка для выделенного ответа */
+    color: #333; /* Цвет текста */
+    font-weight: bold; /* Сделать текст жирным */
+    padding: 5px; /* Немного отступов для лучшего визуального восприятия */
+}
+.bar-user:hover {
+    background-color: #4cafa0; /* Яркий желтый цвет для выделения */
+    border: 2px solid #4CAF50; /* Оранжевая рамка для выделенного ответа */
+    color: #333; /* Цвет текста */
+    font-weight: bold; /* Сделать текст жирным */
+    padding: 5px; /* Немного отступов для лучшего визуального восприятия */
 }
 
 .labels {
