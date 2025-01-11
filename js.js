@@ -128,6 +128,12 @@ function showQuestion(index) {
 
 // Обработчик выбора ответа
 function selectAnswer(index) {
+    const allAnswers = document.querySelectorAll('.answer'); // Получаем все варианты ответов
+    allAnswers.forEach(answer => answer.classList.remove('bar-user')); // Удаляем класс выделения с других вариантов
+
+    const selectedAnswer = allAnswers[index]; // Получаем выбранный элемент
+    selectedAnswer.classList.add('bar-user'); // Добавляем класс выделения
+
     const radioButton = document.getElementById(`answer-${index}`);
     radioButton.checked = true; // Активируем радиокнопку при клике на контейнер
 }
