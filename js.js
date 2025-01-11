@@ -16,9 +16,9 @@ let questions = [
             { text: "Язык программирования", correct: false },
             { text: "Язык разметки", correct: false },
             { text: "Язык стилей", correct: true },
-            { text: "Язык запросов", correct: false },
             { text: "Язык выполнения кода", correct: false },
-            { text: "Язык управления", correct: false }
+            { text: "Язык управления", correct: false },
+            { text: "Язык синтаксиса", correct: false }
         ]
     },
     {
@@ -27,7 +27,7 @@ let questions = [
             { text: "style", correct: true },
             { text: "css", correct: false },
             { text: "script", correct: false },
-            { text: "link", correct: true },
+            { text: "пон", correct: false },
             { text: "stylesheet", correct: false },
             { text: "style-link", correct: false }
         ]
@@ -81,11 +81,19 @@ let questions = [
 let currentQuestionIndex = 0;
 let correctAnswers = 0;
 const totalQuestions = 5; // Количество вопросов для теста
+let selectedAnswers = []; // Массив для хранения выбранных пользователем ответов
 
 // Массив для статистики пользователей, который будет обновляться после каждого теста
 let userStats = JSON.parse(localStorage.getItem('userStats')) || [];
 
-// Функция для перемешивания массива и выбора случайных вопросов
+// Получаем случайные 5 вопросов из 7
+function getRandomQuestions() {
+    const shuffledQuestions = [...questions];
+    shuffle(shuffledQuestions); // Перемешиваем все вопросы
+    return shuffledQuestions.slice(0, totalQuestions); // Берем только 5 случайных вопросов
+}
+
+// Перемешиваем массив
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -93,31 +101,35 @@ function shuffle(array) {
     }
 }
 
-// Получаем случайные 5 вопросов из 7
-function getRandomQuestions() {
-    const shuffledQuestions = [...questions];
-    shuffle(shuffledQuestions);
-    return shuffledQuestions.slice(0, totalQuestions);
-}
+// Выбор 4 случайных ответов, включая 1 правильный
+function getRandomAnswers(question) {
+    const correctAnswer = question.allOptions.filter(option => option.correct);
+    const incorrectAnswers = question.allOptions.filter(option => !option.correct);
+    shuffle(incorrectAnswers);
 
-// Функция для выбора случайных неправильных вариантов ответа
-function getOptionsWithRandomWrongAnswers(correctAnswer) {
-    const wrongAnswers = correctAnswer.allOptions.filter(option => !option.correct);
-    shuffle(wrongAnswers);
-    const randomWrongAnswers = wrongAnswers.slice(0, 3); // Получаем 3 случайных неправильных ответа
-    return [correctAnswer.allOptions.find(option => option.correct), ...randomWrongAnswers];
+    // Выбираем 3 случайных неправильных ответа
+    const selectedIncorrectAnswers = incorrectAnswers.slice(0, 3);
+
+    // Собираем все ответы (1 правильный + 3 неправильных)
+    const allSelectedAnswers = [...correctAnswer, ...selectedIncorrectAnswers];
+
+    // Перемешиваем выбранные ответы
+    shuffle(allSelectedAnswers);
+
+    return allSelectedAnswers;
 }
 
 // Отображение вопроса и вариантов ответов
 function showQuestion(index) {
     const question = questions[index];
-    const selectedOptions = getOptionsWithRandomWrongAnswers(question);
+    const selectedOptions = getRandomAnswers(question); // Получаем случайные ответы
+
     const quizContainer = document.getElementById("quiz-container");
     quizContainer.innerHTML = `
         <h2>${question.question}</h2>
         <div id="answers-container">
-            ${selectedOptions.map((option, i) => `
-                <div class="answer" onclick="selectAnswer(${i})">
+            ${selectedOptions.map((option, i) => ` 
+                <div class="answer" onclick="selectAnswer(${i}, ${selectedOptions[i].correct})">
                     <input type="radio" name="answer" value="${i}" id="answer-${i}" style="display: none;">
                     <span>${option.text}</span>
                 </div>
@@ -127,25 +139,29 @@ function showQuestion(index) {
 }
 
 // Обработчик выбора ответа
-function selectAnswer(index) {
+function selectAnswer(index, isCorrect) {
     const allAnswers = document.querySelectorAll('.answer'); // Получаем все варианты ответов
-    allAnswers.forEach(answer => answer.classList.remove('bar-user')); // Удаляем класс выделения с других вариантов
+    allAnswers.forEach(answer => answer.classList.remove('bar-user')); // Удаляем выделение
 
     const selectedAnswer = allAnswers[index]; // Получаем выбранный элемент
-    selectedAnswer.classList.add('bar-user'); // Добавляем класс выделения
+    selectedAnswer.classList.add('bar-user'); // Добавляем выделение
 
     const radioButton = document.getElementById(`answer-${index}`);
-    radioButton.checked = true; // Активируем радиокнопку при клике на контейнер
+    radioButton.checked = true; // Устанавливаем активную радиокнопку
+
+    // Сохраняем правильность ответа
+    selectedAnswers[currentQuestionIndex] = isCorrect;
 }
 
 // Обработчик для перехода к следующему вопросу
 function nextQuestion() {
     const selectedOption = document.querySelector('input[name="answer"]:checked');
     if (selectedOption) {
-        const isCorrect = questions[currentQuestionIndex].allOptions[selectedOption.value].correct;
+        const isCorrect = selectedAnswers[currentQuestionIndex]; // Получаем, правильный ли был выбранный ответ
         if (isCorrect) {
             correctAnswers++;
         }
+
         currentQuestionIndex++;
 
         if (currentQuestionIndex < totalQuestions) {
@@ -155,6 +171,7 @@ function nextQuestion() {
         }
     }
 }
+
 
 // Вывод результата
 function showResult() {
@@ -199,7 +216,7 @@ function showGraph() {
     // Расчет статистики
     const totalParticipants = userStats.length;
     const userCorrectAnswers = correctAnswers; // Это количество верных ответов для текущего пользователя
-    const correctAnswerCounts = new Array(totalQuestions + 1).fill(0); // Массив для подсчета количества пользователей, ответивших на определенное количество вопросов
+    const correctAnswerCounts = new Array(totalQuestions + 1).fill(0); // Массив для подсчета количества пользователей, ответивших на определенное количество правильных ответов
 
     // Подсчитываем, сколько пользователей выбрали каждое количество правильных ответов
     userStats.forEach(correctAnswers => correctAnswerCounts[correctAnswers]++);
